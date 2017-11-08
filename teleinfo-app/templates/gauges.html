@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="/static/FlexGauge.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+
+    <style>
+         /** these classes are pre-generated **/
+            .fg-dial {
+                font-size: 200%;
+                font-weight: bold;
+                left: 0;
+                position:  absolute;
+                text-align: center;
+                top: 100px;
+                width: 200px;
+            }
+            .fg-dial-label {
+                font-size: 200%;
+                font-weight: bold;
+                left: 0;
+                position: absolute;
+                text-align: center;
+                top: 140px;
+                width: 200px;
+            }
+            .gauge-holder{
+                position: relative;
+            }
+
+
+    </style>
+</head>
+<body>
+
+
+
+<div class="container-fluid"><h1>gauge demo</h1>
+    <div class="row">
+        <div class="col-sm">
+            <div class="gauge-holder" id="gauge-intensite"></div>
+        </div>
+        <div class="col-sm">
+            <div class="gauge-holder" id="gauge-puissance"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="gauge-holder" id="gauge-index-hp"></div>
+        </div>
+        <div class="col-sm">
+            <div class="gauge-holder" id="gauge-index-hc"></div>
+        </div>
+    </div>
+
+
+
+    </div>
+
+</div>
+</div>
+
+<script>
+        var gaugeIntensite = new FlexGauge({
+        appendTo: '#gauge-intensite',
+         dialValue: true,
+         dialLabel: "Intensité",
+         dialUnit: ' A',
+        });
+
+        var gaugePuissance = new FlexGauge({
+        appendTo: '#gauge-puissance',
+         dialValue: true,
+         dialLabel: "Puissance",
+         dialUnit: ' W',
+
+        });
+
+        var source = new EventSource('/gauge/intensite');
+
+        source.addEventListener('message', function(e) {
+
+            var data = JSON.parse(e.data);
+            gaugeParams={
+                arcFillInt: data.curr,
+                arcFillTotal: data.max
+                }
+            gaugeIntensite.update(gaugeParams)
+        }, false);
+
+
+    </script>
+</body>
+</html>
