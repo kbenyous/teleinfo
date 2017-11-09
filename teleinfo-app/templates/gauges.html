@@ -15,7 +15,7 @@
                 left: 0;
                 position:  absolute;
                 text-align: center;
-                top: 100px;
+                top: 80px;
                 width: 200px;
             }
             .fg-dial-label {
@@ -38,7 +38,7 @@
 
 
 
-<div class="container-fluid"><h1>gauge demo</h1>
+<div class="container-fluid"><h1>Smart metering</h1>
     <div class="row">
         <div class="col-sm">
             <div class="gauge-holder" id="gauge-intensite"></div>
@@ -69,6 +69,7 @@
          dialValue: true,
          dialLabel: "Intensité",
          dialUnit: ' A',
+         animateSpeed: 1
         });
 
         var gaugePuissance = new FlexGauge({
@@ -76,19 +77,35 @@
          dialValue: true,
          dialLabel: "Puissance",
          dialUnit: ' W',
-
+         animateSpeed: 1
         });
 
-        var source = new EventSource('/gauge/intensite');
+        var gaugeIndexHp = new FlexGauge({
+        appendTo: '#gauge-index-hp',
+         dialValue: true,
+         dialLabel: "Index HP",
+         dialUnit: ' Wh',
+         animateSpeed: 1
+        });
+
+        var gaugeIndexHc = new FlexGauge({
+        appendTo: '#gauge-index-hc',
+         dialValue: true,
+         dialLabel: "Index HC",
+         dialUnit: ' Wh',
+         animateSpeed: 1
+        });
+
+        var source = new EventSource('/api/gauges');
 
         source.addEventListener('message', function(e) {
 
             var data = JSON.parse(e.data);
-            gaugeParams={
-                arcFillInt: data.curr,
-                arcFillTotal: data.max
-                }
-            gaugeIntensite.update(gaugeParams)
+
+            gaugeIntensite.update(data['gauge_intensite'])
+            gaugePuissance.update(data['gauge_puissance'])
+            gaugeIndexHp.update(data['gauge_index_hp'])
+            gaugeIndexHc.update(data['gauge_index_hc'])
         }, false);
 
 
